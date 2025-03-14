@@ -16,102 +16,71 @@ Widget::~Widget()
 }
 
 
-void Widget::increaseMoney(int value) {
+void Widget::changeMoney(int value) {
     money += value;
     ui->lcdNumber->display(money);
     changeButtonState();
 }
 
 void Widget::changeButtonState() {
-    pbCoffieButtonState();
-    pbMilkCoffieButtonState();
-    pbTeaButtonState();
-    pbResetButtonState();
-}
-void Widget::pbCoffieButtonState() {
-    if(money < 100) {
-        ui->pbCoffie->setEnabled(false);
-    }
-    else {
-        ui->pbCoffie->setEnabled(true);
-    }
-}
-void Widget::pbMilkCoffieButtonState() {
-    if(money < 150) {
-        ui->pbMilkCoffie->setEnabled(false);
-    }
-    else {
-        ui->pbMilkCoffie->setEnabled(true);
-    }
-}
-void Widget::pbTeaButtonState() {
-    if(money < 200) {
-        ui->pbTea->setEnabled(false);
-    }
-    else {
-        ui->pbTea->setEnabled(true);
-    }
-}
-void Widget::pbResetButtonState() {
-    if(money <= 0) {
-        ui->pbReset->setEnabled(false);
-    }
-    else {
-        ui->pbReset->setEnabled(true);
-    }
+    ui->pbCoffie->setEnabled(100 <= money);
+    ui->pbMilkCoffie->setEnabled(150 <= money);
+    ui->pbTea->setEnabled(200 <= money);
+    ui->pbReset->setEnabled(0 < money);
 }
 
 
 void Widget::on_pb10_clicked()
 {
-    increaseMoney(10);
+    changeMoney(10);
 }
 void Widget::on_pb50_clicked()
 {
-    increaseMoney(50);
+    changeMoney(50);
 }
 void Widget::on_pb100_clicked()
 {
-    increaseMoney(100);
+    changeMoney(100);
 }
 void Widget::on_pb500_clicked()
 {
-    increaseMoney(500);
+    changeMoney(500);
 }
 
 
 void Widget::on_pbCoffie_clicked()
 {
-    increaseMoney(-100);
+    changeMoney(-100);
 }
 void Widget::on_pbMilkCoffie_clicked()
 {
-    increaseMoney(-150);
+    changeMoney(-150);
 }
 void Widget::on_pbTea_clicked()
 {
-    increaseMoney(-200);
+    changeMoney(-200);
 }
 
 
 void Widget::on_pbReset_clicked()
 {
+    int moneys[4] = {500, 100, 50, 10};
     int cash[4] = {0, 0, 0, 0};
-    cash[3] = money / 500;
-    money %= 500;
-    cash[2] = money / 100;
-    money %= 100;
-    cash[1] = money / 50;
-    money %= 50;
-    cash[0] = money / 10;
+    QString message = QString("");
 
-    QString message = QString("10won - %1 / 50won - %2 / 100won -%3 / 500won - %4")
-                          .arg(cash[0])
-                          .arg(cash[1])
-                          .arg(cash[2])
-                          .arg(cash[3]);
+    for(int i = 0; i < sizeof(moneys)/sizeof(moneys[0]); i++) {
+        cash[i] = money / moneys[i];
+        money %= moneys[i];
+
+        if(cash[i] != 0) {
+            message += QString("%1won - %2\n")
+                           .arg(moneys[i])
+                           .arg(cash[i]);
+        }
+    }
+
     QMessageBox mb;
     mb.information(this, "Return money", message);
-    increaseMoney(-money);
+    changeMoney(-money);
 }
 

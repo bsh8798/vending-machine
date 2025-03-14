@@ -19,12 +19,8 @@ public:
 
     //member
     int money{0};  //(int money = 0) == (int money{0}))
-    void increaseMoney(int value);
+    void changeMoney(int value);
     void changeButtonState();
-    void pbCoffieButtonState();
-    void pbMilkCoffieButtonState();
-    void pbTeaButtonState();
-    void pbResetButtonState();
 
 private slots:
     void on_pb10_clicked();
